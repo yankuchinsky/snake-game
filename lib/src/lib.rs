@@ -45,6 +45,16 @@ impl Player {
     self.body.push(point);
   }
 
+  pub fn self_collision_check(&mut self) -> bool {
+    for body_element in self.body.iter_mut() {
+      if body_element.get_x() == self.point.get_x() && body_element.get_y() == self.point.get_y() {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   pub fn get_point(&self) -> Point {
     self.point
   }
