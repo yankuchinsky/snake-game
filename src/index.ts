@@ -1,9 +1,14 @@
 const wasmModule = import("lib");
 
+const FIELD_WIDTH = 500;
+const FIELD_HEIGHT = 500;
+
 const WIDTH = 10;
 const HEIGHT = 10;
 
 type Direction = 'Top' | 'Down' | 'Left' | 'Right';
+
+const getRandomPosition = () => Math.round((Math.random() * FIELD_WIDTH) / WIDTH) * WIDTH;
 
 const initWasm = async () => {
   try {
@@ -53,14 +58,17 @@ const bootstrap = async () => {
     })
     
     const player = Player.new(250, 250);
-    const food = Point.new(120, 120);
+    const food = Point.new(getRandomPosition(), getRandomPosition());
 
     render(context, player, food);
     
     const interval = setInterval(() => {
       const point = player.get_point();
       
-      player.collision_check(food.get_x(), food.get_y());
+      if (player.collision_check(food.get_x(), food.get_y())) {
+        food.set_x(getRandomPosition());
+        food.set_y(getRandomPosition());
+      }
 
       if (direction === 'Top') {
         const y = point.get_y();

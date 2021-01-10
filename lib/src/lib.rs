@@ -23,13 +23,17 @@ impl Player {
     Player { point, body }
   }
 
-  pub fn collision_check(&mut self, x: i32, y: i32) {
+  pub fn collision_check(&mut self, x: i32, y: i32) -> bool{
     let s_x = self.point.get_x();
     let s_y = self.point.get_y();
 
     if s_x == x && s_y == y {
       self.add_to_body();
+      
+      return true;
     }
+
+    return false;
   }
 
   pub fn get_body(&self) -> JsValue {
