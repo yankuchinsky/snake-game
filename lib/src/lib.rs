@@ -71,13 +71,21 @@ impl Player {
   pub fn set_x(&mut self, x: i32) {
     self.move_body(self.point.get_x(), self.point.get_y());
 
-    self.point.set_x(x);
+    match self.point.get_x() {
+      (x) if x < 0 => self.point.set_x(500),
+      (x) if x > 500 => self.point.set_x(0),
+      _ =>  self.point.set_x(x),
+    }
   }
 
   pub fn set_y(&mut self, y:i32) {
     self.move_body(self.point.get_x(), self.point.get_y());
 
-    self.point.set_y(y)
+    match self.point.get_y() {
+      (y) if y < 0 => self.point.set_y(500),
+      (y) if y > 500 => self.point.set_y(0),
+      _ => self.point.set_y(y),
+    }
   }
 }
 
