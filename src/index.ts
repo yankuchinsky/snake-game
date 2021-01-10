@@ -65,6 +65,10 @@ const bootstrap = async () => {
     const interval = setInterval(() => {
       const point = player.get_point();
       
+      if (player.self_collision_check()) {
+        endGame();
+      }
+
       if (player.collision_check(food.get_x(), food.get_y())) {
         food.set_x(getRandomPosition());
         food.set_y(getRandomPosition());
@@ -94,6 +98,12 @@ const bootstrap = async () => {
 
     }, 100);
 
+
+    const endGame = () => {
+      clearInterval(interval);
+
+      alert("Game over");
+    }
 
   } catch (e) {
     console.log("ERROR ", e)
