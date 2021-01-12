@@ -82,8 +82,8 @@ impl Player {
     self.move_body(self.point.get_x(), self.point.get_y());
 
     match self.point.get_x() {
-      (x) if x < 0 => self.point.set_x(500),
-      (x) if x > 500 => self.point.set_x(0),
+      (x) if x < -250 => self.point.set_x(250),
+      (x) if x > 250 => self.point.set_x(-250),
       _ =>  self.point.set_x(x),
     }
   }
@@ -92,8 +92,8 @@ impl Player {
     self.move_body(self.point.get_x(), self.point.get_y());
 
     match self.point.get_y() {
-      (y) if y < 0 => self.point.set_y(500),
-      (y) if y > 500 => self.point.set_y(0),
+      (y) if y < -250 => self.point.set_y(250),
+      (y) if y > 250 => self.point.set_y(-250),
       _ => self.point.set_y(y),
     }
   }

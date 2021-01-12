@@ -9,10 +9,12 @@
   "author": "Yan Kuchinsky",
   "license": "ISC",
   "dependencies": {
+    "@types/three": "^0.103.2",
     "cross-env": "^7.0.3",
     "file-loader": "^6.2.0",
-    "wasm-loader": "^1.3.0",
     "lib": "file:./lib/pkg",
+    "three": "^0.124.0",
+    "wasm-loader": "^1.3.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
