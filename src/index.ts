@@ -6,10 +6,17 @@ import {
   MeshBasicMaterial,
   Mesh,
   SphereGeometry,
-  HemisphereLight,
+  PointLight,
   AxesHelper,
   GridHelper,
+  TextureLoader,
+  MeshPhongMaterial,
+  DirectionalLight,
 } from 'three';
+
+import texture from './images/texture.png';
+
+const txt = new TextureLoader().load(texture);
 
 const scene = new Scene();
 
@@ -26,7 +33,7 @@ const SPEED = 10;
 
 type Direction = 'Top' | 'Down' | 'Left' | 'Right';
 
-const getRandomPosition = () => Math.round((Math.random() * 250) / WIDTH) * WIDTH;
+const getRandomPosition = () => (Math.round((Math.random() * 250) / FIELD_WIDTH) - 250 ) * WIDTH;
 
 const initWasm = async () => {
   try {
@@ -51,45 +58,72 @@ const bootstrap = async () => {
       return;
     }
 
-    const camera = new PerspectiveCamera(165, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const hemiLight = new HemisphereLight(0xffeeb1, 0x080820, 4);
+    const camera = new PerspectiveCamera(145, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     threeElement.appendChild(renderer.domElement);
 
+    // const light = new PointLight( 0xff0000, 1, 100 );
+    // light.position.set(5, 0, 10).normalize();
+    // scene.add(light);
+
+    const dLight = new DirectionalLight( 0xffffff );
+    dLight.position.set(0, 100, 0).normalize();
+    scene.add(dLight);
+
     console.log(window.innerWidth, window.innerHeight);
     
-    scene.add(hemiLight);
 
 
     const geometry = new SphereGeometry(0.6, 32, 32);
     const geometry2 = new SphereGeometry(0.6, 32, 32);
-    const material = new MeshBasicMaterial({ color: 0x00ff00 });
+    const field = new BoxGeometry(1000, 10, 1000);
+    const material = new MeshBasicMaterial({ color: 0xffffff, map: txt });
     const material2 = new MeshBasicMaterial({ color: 0x00ffff });
-    const playerHead = new Mesh(geometry, material);
+    const fieldMaterial = new MeshPhongMaterial({ color: 0xb7ced6, shininess: 40, specular: 0x111111, emissive: 0x0 });
+    const phongMaterial = new MeshPhongMaterial({
+      color: 0xf1ff01,
+      map: txt,
+      shininess: 10, 
+      specular: 0x111111, 
+      emissive: 0x0
+     });
 
-    const foodMesh = new Mesh(geometry2, material2);
+    //  scene.scale = false;
+
+    const playerHead = new Mesh(geometry, phongMaterial);
+
+    const foodMesh = new Mesh(geometry2, phongMaterial);
+
+    const fieldMech = new Mesh(field, fieldMaterial);
+
+    fieldMech.position.x = 0;
+    fieldMech.position.y = -250;
 
     scene.add(playerHead, camera);
     scene.add(foodMesh, camera);
+    scene.add(fieldMech, camera);
 
+
+    // foodMesh.position.x = getRandomPosition();
+    // foodMesh.position.y = getRandomPosition();
+    
 
     const size = 1000;
     const divisions = 100;
 
-    const gridHelper = new GridHelper( size, divisions );
-    scene.add( gridHelper );
+    const gridHelper = new GridHelper(size, divisions);
+    scene.add(gridHelper);
 
     const axesHelper = new AxesHelper(15);
     scene.add(axesHelper);
 
-    camera.position.z = 5;
+    camera.position.z = 0;
     camera.position.x = 0;
-    camera.position.y = 10.8
+    camera.position.y = 14;
 
-    camera.rotation.x = -1.5;
-    // camera.rotation.z = -0.2;
-
+    camera.rotation.x = -1.56;
+    // camera.rotation.y = -0.2;
     
     // renderer.render(scene, camera);
     
@@ -192,7 +226,7 @@ const render = (renderer: WebGLRenderer, camera: PerspectiveCamera, player: any,
   // draw food
   // context.fillRect(food.get_x(), food.get_y(), WIDTH, HEIGHT);
 
-  console.log(point.get_x(), point.get_y())
+  console.log(food.get_x() / 10, 1, food.get_x() / 10)
 
   playerHead.position.set(point.get_x() / 10, 1, point.get_y() / 10);
   foodMesh.position.set(food.get_x() / 10, 1, food.get_x() / 10);
