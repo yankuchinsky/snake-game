@@ -2,11 +2,9 @@ import {
   Scene, 
   PerspectiveCamera, 
   WebGLRenderer, 
-  BoxGeometry, 
-  MeshBasicMaterial,
+  BoxGeometry,
   Mesh,
   SphereGeometry,
-  PointLight,
   AxesHelper,
   GridHelper,
   TextureLoader,
@@ -33,7 +31,7 @@ const SPEED = 10;
 
 type Direction = 'Top' | 'Down' | 'Left' | 'Right';
 
-const getRandomPosition = () => (Math.round((Math.random() * 250) / FIELD_WIDTH) - 250 ) * WIDTH;
+const getRandomPosition = () => Math.round(Math.round(Math.random() * 500 - 250) / WIDTH) * WIDTH;
 
 const initWasm = async () => {
   try {
@@ -58,14 +56,12 @@ const bootstrap = async () => {
       return;
     }
 
-    const camera = new PerspectiveCamera(145, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const playerBody: any[] = [];
+
+    const camera = new PerspectiveCamera(135, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     threeElement.appendChild(renderer.domElement);
-
-    // const light = new PointLight( 0xff0000, 1, 100 );
-    // light.position.set(5, 0, 10).normalize();
-    // scene.add(light);
 
     const dLight = new DirectionalLight( 0xffffff );
     dLight.position.set(0, 100, 0).normalize();
@@ -78,8 +74,6 @@ const bootstrap = async () => {
     const geometry = new SphereGeometry(0.6, 32, 32);
     const geometry2 = new SphereGeometry(0.6, 32, 32);
     const field = new BoxGeometry(1000, 10, 1000);
-    const material = new MeshBasicMaterial({ color: 0xffffff, map: txt });
-    const material2 = new MeshBasicMaterial({ color: 0x00ffff });
     const fieldMaterial = new MeshPhongMaterial({ color: 0xb7ced6, shininess: 40, specular: 0x111111, emissive: 0x0 });
     const phongMaterial = new MeshPhongMaterial({
       color: 0xf1ff01,
@@ -88,8 +82,6 @@ const bootstrap = async () => {
       specular: 0x111111, 
       emissive: 0x0
      });
-
-    //  scene.scale = false;
 
     const playerHead = new Mesh(geometry, phongMaterial);
 
@@ -103,11 +95,6 @@ const bootstrap = async () => {
     scene.add(playerHead, camera);
     scene.add(foodMesh, camera);
     scene.add(fieldMech, camera);
-
-
-    // foodMesh.position.x = getRandomPosition();
-    // foodMesh.position.y = getRandomPosition();
-    
 
     const size = 1000;
     const divisions = 100;
@@ -123,9 +110,6 @@ const bootstrap = async () => {
     camera.position.y = 14;
 
     camera.rotation.x = -1.56;
-    // camera.rotation.y = -0.2;
-    
-    // renderer.render(scene, camera);
     
     let direction: Direction; 
 
@@ -150,9 +134,6 @@ const bootstrap = async () => {
     const player = Player.new(0, 0);
     playerHead.position.set(0, 0, 0);
     const food = Point.new(getRandomPosition(), getRandomPosition());
-    // foodMesh.position.set(10, 0, 20);
-
-    // render(renderer, camera, player, playerHead);
     
     const interval = setInterval(() => {
       const point = player.get_point();
@@ -162,24 +143,24 @@ const bootstrap = async () => {
       }
 
       if (player.collision_check(food.get_x(), food.get_y())) {
+        const bodyPart = new Mesh(geometry2, phongMaterial);
+        scene.add(bodyPart);
+        playerBody.push(bodyPart);
+
         food.set_x(getRandomPosition());
         food.set_y(getRandomPosition());
+
       }
 
       if (direction === 'Top') {
         const y = point.get_y();
         player.set_y(y - SPEED);
-        // const y1 = playerHead.position.y;
-        // playerHead.position.setY(y1 + SPEED);
         
       }
       
       if (direction === 'Down') {
         const y = point.get_y();
         player.set_y(y + SPEED);
-
-        // const y1 = playerHead.position.y;
-        // playerHead.position.setY(y1 + SPEED);
       }
 
       if (direction === 'Left') {
@@ -191,9 +172,8 @@ const bootstrap = async () => {
         const x = point.get_x();
         player.set_x(x + SPEED);
       }
-      console.log("player", point.get_x())
 
-      render(renderer, camera, player, playerHead, foodMesh, food);
+      render(renderer, camera, player, playerHead, foodMesh, food, playerBody);
 
     }, 100);
 
@@ -210,26 +190,18 @@ const bootstrap = async () => {
 }
 
 
-const render = (renderer: WebGLRenderer, camera: PerspectiveCamera, player: any, playerHead: any, foodMesh: any, food: any)=> {
+const render = (renderer: WebGLRenderer, camera: PerspectiveCamera, player: any, playerHead: any, foodMesh: any, food: any, playerBody: any[])=> {
   const point = player.get_point();
-  // context.clearRect(0, 0, 500, 500);
-
-  // draw player
-  // context.fillRect(point.get_x(), point.get_y(), WIDTH, HEIGHT);
-
-  // const body = player.get_body();
-
-  // body.forEach((element: any) => {
-  //   context.fillRect(element.x, element.y, WIDTH, HEIGHT);
-  // });
-
-  // draw food
-  // context.fillRect(food.get_x(), food.get_y(), WIDTH, HEIGHT);
-
-  console.log(food.get_x() / 10, 1, food.get_x() / 10)
+  const body = player.get_body();
 
   playerHead.position.set(point.get_x() / 10, 1, point.get_y() / 10);
-  foodMesh.position.set(food.get_x() / 10, 1, food.get_x() / 10);
+  foodMesh.position.set(food.get_x() / 10, 1, food.get_y() / 10);
+
+  playerBody.forEach((element: any, idx: number) => {
+    if (body[idx]) {
+      element.position.set(body[idx].x / 10, 1, body[idx].y / 10);
+    }
+  });
 
   renderer.render(scene, camera);
 }
