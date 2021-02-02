@@ -67,19 +67,14 @@ const bootstrap = async () => {
     dLight.position.set(0, 100, 0).normalize();
     scene.add(dLight);
 
-    console.log(window.innerWidth, window.innerHeight);
-    
-
-
     const geometry = new SphereGeometry(0.6, 32, 32);
     const geometry2 = new SphereGeometry(0.6, 32, 32);
     const field = new BoxGeometry(1000, 10, 1000);
-    const fieldMaterial = new MeshPhongMaterial({ color: 0xb7ced6, shininess: 40, specular: 0x111111, emissive: 0x0 });
+    const fieldMaterial = new MeshPhongMaterial({ color: 0xb7ced6, shininess: 40 });
     const phongMaterial = new MeshPhongMaterial({
       color: 0xf1ff01,
       map: txt,
-      shininess: 10, 
-      specular: 0x111111, 
+      shininess: 10,
       emissive: 0x0
      });
 
@@ -95,15 +90,6 @@ const bootstrap = async () => {
     scene.add(playerHead, camera);
     scene.add(foodMesh, camera);
     scene.add(fieldMech, camera);
-
-    const size = 1000;
-    const divisions = 100;
-
-    const gridHelper = new GridHelper(size, divisions);
-    scene.add(gridHelper);
-
-    const axesHelper = new AxesHelper(15);
-    scene.add(axesHelper);
 
     camera.position.z = 0;
     camera.position.x = 0;
