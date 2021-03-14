@@ -18,7 +18,7 @@ pub struct Player {
 impl Player {
   pub fn new(x: i32, y: i32) -> Player {
     let point = Point::new(x, y);
-    let mut body = Vec::<Point>::new();
+    let body = Vec::<Point>::new();
 
     Player { point, body }
   }
@@ -82,8 +82,8 @@ impl Player {
     self.move_body(self.point.get_x(), self.point.get_y());
 
     match self.point.get_x() {
-      (x) if x < -250 => self.point.set_x(250),
-      (x) if x > 250 => self.point.set_x(-250),
+      x if x < -250 => self.point.set_x(250),
+      x if x > 250 => self.point.set_x(-250),
       _ =>  self.point.set_x(x),
     }
   }
@@ -92,8 +92,8 @@ impl Player {
     self.move_body(self.point.get_x(), self.point.get_y());
 
     match self.point.get_y() {
-      (y) if y < -250 => self.point.set_y(250),
-      (y) if y > 250 => self.point.set_y(-250),
+      y if y < -250 => self.point.set_y(250),
+      y if y > 250 => self.point.set_y(-250),
       _ => self.point.set_y(y),
     }
   }
