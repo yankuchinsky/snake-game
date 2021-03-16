@@ -5,8 +5,6 @@ import {
   BoxGeometry,
   Mesh,
   SphereGeometry,
-  AxesHelper,
-  GridHelper,
   TextureLoader,
   MeshPhongMaterial,
   DirectionalLight,
